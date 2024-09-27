@@ -1,0 +1,49 @@
+name: publish release
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: 8.7
+
+      - name: Create new buildx builder
+        run: docker buildx create --name custom_builder --use
+
+      - name: Build application
+        run: gradle build -Dquarkus.package.jar.type=uber-jar
+
+      - name: Build images and push to dockerhub
+        run: docker buildx build --platform=linux/amd64 --platform=linux/arm64 -t easybill/en16931-validator:${{github.ref_name}} -t easybill/en16931-validator:latest  . --push
+
+      - name: Push current readme.md as docker hub repository description
+        uses: christian-korneck/update-container-description-action@v1
+        env:
+          DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKER_PASS: ${{ secrets.DOCKERHUB_TOKEN }}
+        with:
+          destination_container_repo: easybill/peppol-bis-billing-validator
+          provider: dockerhub
+          short_description: 'A small docker service to provide a validation service for EN16931 schematron rules for e-invoices using XML'
+          readme_file: 'README.md'
