@@ -45,5 +45,5 @@ jobs:
         with:
           destination_container_repo: easybill/peppol-bis-billing-validator
           provider: dockerhub
-          short_description: 'A small docker service to provide a validation service for EN16931 schematron rules for e-invoices using XML'
+          short_description: 'A small docker service to provide a validation service for EN16931 schematron rules'
           readme_file: 'README.md'
