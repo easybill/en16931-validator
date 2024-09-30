@@ -32,3 +32,6 @@ jobs:
 
       - name: Run tests with gradle wrapper
         run: gradle test
+
+      - name: Run native tests with gradle wrapper
+        run: gradle quarkusIntTest

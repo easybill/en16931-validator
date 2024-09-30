@@ -3,6 +3,6 @@ package io.github.easybill;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
 @QuarkusIntegrationTest
-class ExampleResourceIT extends ExampleResourceTest {
+class IndexResourceIT extends IndexControllerTest {
     // Execute the same tests but in packaged mode.
 }
