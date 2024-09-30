@@ -31,4 +31,4 @@ jobs:
           gradle-version: 8.7
 
       - name: Run tests with gradle wrapper
-        run: gradle test
+        run: gradle quarkusTest
