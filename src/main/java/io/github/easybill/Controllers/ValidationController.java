@@ -15,11 +15,11 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.jboss.resteasy.reactive.RestResponse;
 
 @Path("/")
-public final class IndexController {
+public final class ValidationController {
 
     private final IValidationService validationService;
 
-    public IndexController(IValidationService validationService) {
+    public ValidationController(IValidationService validationService) {
         this.validationService = validationService;
     }
 

@@ -16,7 +16,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 @QuarkusTest
-class IndexControllerTest {
+class ValidationControllerTest {
 
     @Test
     void testValidationEndpointWhenInvokedWithWrongMethod() {
