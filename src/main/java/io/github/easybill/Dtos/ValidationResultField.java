@@ -1,5 +1,6 @@
 package io.github.easybill.Dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.helger.schematron.svrl.jaxb.FailedAssert;
 import com.helger.schematron.svrl.jaxb.Text;
 import java.util.List;
@@ -12,10 +13,10 @@ enum Severity {
 }
 
 public record ValidationResultField(
-    @NonNull String ruleId,
-    @NonNull String ruleLocation,
-    @NonNull Severity severity,
-    @NonNull List<@NonNull String> messages
+    @JsonProperty("rule_id") @NonNull String id,
+    @JsonProperty("rule_location") @NonNull String location,
+    @JsonProperty("rule_severity") @NonNull Severity severity,
+    @JsonProperty("rule_messages") @NonNull List<@NonNull String> messages
 ) {
     public static ValidationResultField fromFailedAssert(
         @NonNull FailedAssert failedAssert
