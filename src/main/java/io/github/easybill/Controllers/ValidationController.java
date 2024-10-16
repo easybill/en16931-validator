@@ -26,7 +26,7 @@ public final class ValidationController {
     @POST
     @Path("/validation")
     @Consumes(MediaType.APPLICATION_XML)
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     @APIResponses(
         {
             @APIResponse(
@@ -39,8 +39,9 @@ public final class ValidationController {
             ),
         }
     )
-    public RestResponse<@NonNull String> validation(InputStream xmlInputStream)
-        throws Exception {
+    public RestResponse<@NonNull ValidationResult> validation(
+        InputStream xmlInputStream
+    ) throws Exception {
         try {
             ValidationResult result = validationService.validateXml(
                 xmlInputStream
@@ -48,13 +49,13 @@ public final class ValidationController {
 
             if (result.isValid()) {
                 return RestResponse.ResponseBuilder
-                    .ok(result.getXmlReport(), MediaType.APPLICATION_XML)
+                    .ok(result, MediaType.APPLICATION_JSON)
                     .build();
             }
 
             return RestResponse.ResponseBuilder
-                .create(RestResponse.Status.BAD_REQUEST, result.getXmlReport())
-                .type(MediaType.APPLICATION_XML)
+                .create(RestResponse.Status.BAD_REQUEST, result)
+                .type(MediaType.APPLICATION_JSON)
                 .build();
         } catch (InvalidXmlException exception) {
             return RestResponse.status(RestResponse.Status.BAD_REQUEST);

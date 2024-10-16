@@ -3,11 +3,12 @@ package io.github.easybill.Services;
 import com.helger.commons.io.ByteArrayWrapper;
 import com.helger.commons.io.resource.ClassPathResource;
 import com.helger.schematron.sch.SchematronResourceSCH;
-import com.helger.schematron.svrl.SVRLMarshaller;
 import com.helger.schematron.svrl.jaxb.FailedAssert;
 import com.helger.schematron.svrl.jaxb.SchematronOutputType;
 import io.github.easybill.Contracts.IValidationService;
 import io.github.easybill.Dtos.ValidationResult;
+import io.github.easybill.Dtos.ValidationResultField;
+import io.github.easybill.Dtos.ValidationResultMetaData;
 import io.github.easybill.Enums.XMLSyntaxType;
 import io.github.easybill.Exceptions.InvalidXmlException;
 import jakarta.inject.Singleton;
@@ -75,15 +76,8 @@ public final class ValidationService implements IValidationService {
         var report = innerValidateSchematron(xmlSyntaxType, bytesFromSteam)
             .orElseThrow(RuntimeException::new);
 
-        String reportXML = new SVRLMarshaller().getAsString(report);
-
-        if (reportXML == null) {
-            throw new RuntimeException("validation failed unexpectedly");
-        }
-
         return new ValidationResult(
-            report,
-            reportXML,
+            new ValidationResultMetaData(),
             getErrorsFromSchematronOutput(report),
             getWarningsFromSchematronOutput(report)
         );
@@ -97,7 +91,7 @@ public final class ValidationService implements IValidationService {
         );
     }
 
-    private List<FailedAssert> getErrorsFromSchematronOutput(
+    private List<@NonNull ValidationResultField> getErrorsFromSchematronOutput(
         @NonNull SchematronOutputType outputType
     ) {
         return outputType
@@ -108,10 +102,11 @@ public final class ValidationService implements IValidationService {
                 Objects.equals(((FailedAssert) element).getFlag(), "fatal")
             )
             .map(element -> (FailedAssert) element)
+            .map(ValidationResultField::fromFailedAssert)
             .toList();
     }
 
-    private List<FailedAssert> getWarningsFromSchematronOutput(
+    private List<@NonNull ValidationResultField> getWarningsFromSchematronOutput(
         @NonNull SchematronOutputType outputType
     ) {
         return outputType
@@ -122,6 +117,7 @@ public final class ValidationService implements IValidationService {
                 Objects.equals(((FailedAssert) element).getFlag(), "warning")
             )
             .map(element -> (FailedAssert) element)
+            .map(ValidationResultField::fromFailedAssert)
             .toList();
     }
 
