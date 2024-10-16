@@ -42,7 +42,6 @@ class IndexControllerTest {
             "UBL/guide-example3.xml",
             "UBL/issue116.xml",
             "UBL/sales-order-example.xml",
-            "UBL/sample-discount-price.xml",
             "UBL/ubl-tc434-creditnote1.xml",
             "UBL/ubl-tc434-example1.xml",
             "UBL/ubl-tc434-example2.xml",
@@ -103,6 +102,7 @@ class IndexControllerTest {
             "CII/CII_ZUGFeRD_23_XRECHNUNG_Elektron.xml",
             "CII/CII_ZUGFeRD_23_XRECHNUNG_Reisekostenabrechnung.xml",
             "CII/XRechnung-O.xml",
+            "CII/CII_ZUGFeRD_23_EXTENDED_Rechnungskorrektur.xml",
         }
     )
     void testValidationEndpointWithValidCIIDocuments(
@@ -118,24 +118,7 @@ class IndexControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(
-        strings = {
-            "Invalid/CII_MissingExchangeDocumentContext.xml",
-            "Invalid/Empty.xml",
-            // Profile BASIC WL is not EN16931 conform. WL = Without Lines. EN16931 requires at least 1 line.
-            "CII/CII_ZUGFeRD_23_BASIC-WL_Einfach.xml",
-            // Profile MINIMUM is not EN16931 conform.
-            "CII/CII_ZUGFeRD_Minimum.xml",
-            "CII/CII_ZUGFeRD_23_MINIMUM_Buchungshilfe.xml",
-            "CII/CII_ZUGFeRD_23_MINIMUM_Rechnung.xml",
-            // Profile EXTENDED is EN16931 conform. However, those examples do have rounding issues. Which is valid
-            // in EXTENDED Profile
-            "CII/CII_ZUGFeRD_23_EXTENDED_Kostenrechnung.xml",
-            "CII/CII_ZUGFeRD_23_EXTENDED_Projektabschlussrechnung.xml",
-            "CII/CII_ZUGFeRD_23_EXTENDED_Rechnungskorrektur.xml",
-            "CII/CII_ZUGFeRD_23_EXTENDED_Warenrechnung.xml",
-        }
-    )
+    @MethodSource("providerValuesValidationEndpointWithInvalidPayload")
     void testValidationEndpointWithInvalidPayload(
         @NonNull String fixtureFileName
     ) throws IOException {
@@ -146,6 +129,28 @@ class IndexControllerTest {
             .post("/validation")
             .then()
             .statusCode(400);
+    }
+
+    static Stream<Arguments> providerValuesValidationEndpointWithInvalidPayload() {
+        return Stream.of(
+            Arguments.of("Invalid/CII_MissingExchangeDocumentContext.xml"),
+            Arguments.of("Invalid/Empty.xml"),
+            // Uses HRK as currency which is no longer supported in EN16931
+            Arguments.of("UBL/sample-discount-price.xml"),
+            // Profile BASIC WL is not EN16931 conform. WL = Without Lines. EN16931 requires at least 1 line.
+            Arguments.of("CII/CII_ZUGFeRD_23_BASIC-WL_Einfach.xml"),
+            // Profile MINIMUM is not EN16931 conform.
+            Arguments.of("CII/CII_ZUGFeRD_Minimum.xml"),
+            Arguments.of("CII/CII_ZUGFeRD_23_MINIMUM_Buchungshilfe.xml"),
+            Arguments.of("CII/CII_ZUGFeRD_23_MINIMUM_Rechnung.xml"),
+            // Profile EXTENDED is EN16931 conform. However, those examples do have rounding issues. Which is valid
+            // in EXTENDED Profile
+            Arguments.of("CII/CII_ZUGFeRD_23_EXTENDED_Kostenrechnung.xml"),
+            Arguments.of(
+                "CII/CII_ZUGFeRD_23_EXTENDED_Projektabschlussrechnung.xml"
+            ),
+            Arguments.of("CII/CII_ZUGFeRD_23_EXTENDED_Warenrechnung.xml")
+        );
     }
 
     @ParameterizedTest

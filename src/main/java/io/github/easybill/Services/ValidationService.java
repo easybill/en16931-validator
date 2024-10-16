@@ -18,6 +18,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.eclipse.microprofile.config.Config;
 import org.mozilla.universalchardet.UniversalDetector;
 
 @Singleton
@@ -26,15 +27,23 @@ public final class ValidationService implements IValidationService {
     private final SchematronResourceSCH ciiSchematron;
     private final SchematronResourceSCH ublSchematron;
 
-    ValidationService() {
+    ValidationService(Config config) {
+        var artefactsVersion = Objects.requireNonNull(
+            config.getConfigValue("en16931.artefacts.version").getValue()
+        );
+
         ciiSchematron =
             new SchematronResourceSCH(
-                new ClassPathResource("EN16931-CII-1.3.12.sch")
+                new ClassPathResource(
+                    String.format("EN16931-CII-%s.sch", artefactsVersion)
+                )
             );
 
         ublSchematron =
             new SchematronResourceSCH(
-                new ClassPathResource("EN16931-UBL-1.3.12.sch")
+                new ClassPathResource(
+                    String.format("EN16931-UBL-%s.sch", artefactsVersion)
+                )
             );
 
         if (!ciiSchematron.isValidSchematron()) {
