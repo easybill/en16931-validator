@@ -1,7 +1,9 @@
 package io.github.easybill;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
 
+import io.github.easybill.Enums.XMLSyntaxType;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import java.io.IOException;
@@ -16,7 +18,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 @QuarkusTest
-class IndexControllerTest {
+class ValidationControllerTest {
 
     @Test
     void testValidationEndpointWhenInvokedWithWrongMethod() {
@@ -26,6 +28,17 @@ class IndexControllerTest {
     @Test
     void testValidationEndpointWhenInvokedWithAnEmptyPayload() {
         given().when().post("/validation").then().statusCode(415);
+    }
+
+    @Test
+    void testValidationEndpointWithEmptyPayload() throws IOException {
+        given()
+            .body(loadFixtureFileAsStream("Invalid/Invalid.xml"))
+            .contentType(ContentType.XML)
+            .when()
+            .post("/validation")
+            .then()
+            .statusCode(400);
     }
 
     @ParameterizedTest
@@ -42,7 +55,6 @@ class IndexControllerTest {
             "UBL/guide-example3.xml",
             "UBL/issue116.xml",
             "UBL/sales-order-example.xml",
-            "UBL/sample-discount-price.xml",
             "UBL/ubl-tc434-creditnote1.xml",
             "UBL/ubl-tc434-example1.xml",
             "UBL/ubl-tc434-example2.xml",
@@ -68,7 +80,14 @@ class IndexControllerTest {
             .when()
             .post("/validation")
             .then()
-            .statusCode(200);
+            .statusCode(200)
+            .contentType(ContentType.JSON)
+            .body("is_valid", equalTo(true))
+            .body(
+                "meta.validation_profile",
+                equalTo(XMLSyntaxType.UBL.toString())
+            )
+            .body("errors", empty());
     }
 
     @ParameterizedTest
@@ -103,6 +122,7 @@ class IndexControllerTest {
             "CII/CII_ZUGFeRD_23_XRECHNUNG_Elektron.xml",
             "CII/CII_ZUGFeRD_23_XRECHNUNG_Reisekostenabrechnung.xml",
             "CII/XRechnung-O.xml",
+            "CII/CII_ZUGFeRD_23_EXTENDED_Rechnungskorrektur.xml",
         }
     )
     void testValidationEndpointWithValidCIIDocuments(
@@ -114,28 +134,40 @@ class IndexControllerTest {
             .when()
             .post("/validation")
             .then()
-            .statusCode(200);
+            .statusCode(200)
+            .contentType(ContentType.JSON)
+            .body("is_valid", equalTo(true))
+            .body(
+                "meta.validation_profile",
+                equalTo(XMLSyntaxType.CII.toString())
+            )
+            .body("errors", empty());
+    }
+
+    static Stream<Arguments> providerValuesValidationEndpointWithInvalidPayload() {
+        return Stream.of(
+            Arguments.of("Invalid/CII_MissingExchangeDocumentContext.xml"),
+            //Arguments.of("Invalid/Empty.xml"),
+            // Uses HRK as currency which is no longer supported in EN16931
+            Arguments.of("UBL/sample-discount-price.xml"),
+            // Profile BASIC WL is not EN16931 conform. WL = Without Lines. EN16931 requires at least 1 line.
+            Arguments.of("CII/CII_ZUGFeRD_23_BASIC-WL_Einfach.xml"),
+            // Profile MINIMUM is not EN16931 conform.
+            Arguments.of("CII/CII_ZUGFeRD_Minimum.xml"),
+            Arguments.of("CII/CII_ZUGFeRD_23_MINIMUM_Buchungshilfe.xml"),
+            Arguments.of("CII/CII_ZUGFeRD_23_MINIMUM_Rechnung.xml"),
+            // Profile EXTENDED is EN16931 conform. However, those examples do have rounding issues. Which is valid
+            // in EXTENDED Profile
+            Arguments.of("CII/CII_ZUGFeRD_23_EXTENDED_Kostenrechnung.xml"),
+            Arguments.of(
+                "CII/CII_ZUGFeRD_23_EXTENDED_Projektabschlussrechnung.xml"
+            ),
+            Arguments.of("CII/CII_ZUGFeRD_23_EXTENDED_Warenrechnung.xml")
+        );
     }
 
     @ParameterizedTest
-    @ValueSource(
-        strings = {
-            "Invalid/CII_MissingExchangeDocumentContext.xml",
-            "Invalid/Empty.xml",
-            // Profile BASIC WL is not EN16931 conform. WL = Without Lines. EN16931 requires at least 1 line.
-            "CII/CII_ZUGFeRD_23_BASIC-WL_Einfach.xml",
-            // Profile MINIMUM is not EN16931 conform.
-            "CII/CII_ZUGFeRD_Minimum.xml",
-            "CII/CII_ZUGFeRD_23_MINIMUM_Buchungshilfe.xml",
-            "CII/CII_ZUGFeRD_23_MINIMUM_Rechnung.xml",
-            // Profile EXTENDED is EN16931 conform. However, those examples do have rounding issues. Which is valid
-            // in EXTENDED Profile
-            "CII/CII_ZUGFeRD_23_EXTENDED_Kostenrechnung.xml",
-            "CII/CII_ZUGFeRD_23_EXTENDED_Projektabschlussrechnung.xml",
-            "CII/CII_ZUGFeRD_23_EXTENDED_Rechnungskorrektur.xml",
-            "CII/CII_ZUGFeRD_23_EXTENDED_Warenrechnung.xml",
-        }
-    )
+    @MethodSource("providerValuesValidationEndpointWithInvalidPayload")
     void testValidationEndpointWithInvalidPayload(
         @NonNull String fixtureFileName
     ) throws IOException {
@@ -145,7 +177,17 @@ class IndexControllerTest {
             .when()
             .post("/validation")
             .then()
-            .statusCode(400);
+            .statusCode(400)
+            .contentType(ContentType.JSON)
+            .body("is_valid", equalTo(false))
+            .body("errors", not(empty()));
+    }
+
+    static Stream<Arguments> providerValuesForDifferentEncodings() {
+        return Stream.of(
+            Arguments.of("UBL/base-example-utf16be.xml"),
+            Arguments.of("UBL/base-example-utf16le.xml")
+        );
     }
 
     @ParameterizedTest
@@ -159,14 +201,10 @@ class IndexControllerTest {
             .when()
             .post("/validation")
             .then()
-            .statusCode(200);
-    }
-
-    static Stream<Arguments> providerValuesForDifferentEncodings() {
-        return Stream.of(
-            Arguments.of("UBL/base-example-utf16be.xml"),
-            Arguments.of("UBL/base-example-utf16le.xml")
-        );
+            .statusCode(200)
+            .contentType(ContentType.JSON)
+            .body("is_valid", equalTo(true))
+            .body("errors", empty());
     }
 
     InputStream loadFixtureFileAsStream(@NonNull String fixtureFileName)

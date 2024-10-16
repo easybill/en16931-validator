@@ -3,11 +3,12 @@ package io.github.easybill.Services;
 import com.helger.commons.io.ByteArrayWrapper;
 import com.helger.commons.io.resource.ClassPathResource;
 import com.helger.schematron.sch.SchematronResourceSCH;
-import com.helger.schematron.svrl.SVRLMarshaller;
 import com.helger.schematron.svrl.jaxb.FailedAssert;
 import com.helger.schematron.svrl.jaxb.SchematronOutputType;
 import io.github.easybill.Contracts.IValidationService;
 import io.github.easybill.Dtos.ValidationResult;
+import io.github.easybill.Dtos.ValidationResultField;
+import io.github.easybill.Dtos.ValidationResultMetaData;
 import io.github.easybill.Enums.XMLSyntaxType;
 import io.github.easybill.Exceptions.InvalidXmlException;
 import jakarta.inject.Singleton;
@@ -18,23 +19,34 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.eclipse.microprofile.config.Config;
 import org.mozilla.universalchardet.UniversalDetector;
 
 @Singleton
 public final class ValidationService implements IValidationService {
 
+    private final String artefactsVersion;
     private final SchematronResourceSCH ciiSchematron;
     private final SchematronResourceSCH ublSchematron;
 
-    ValidationService() {
+    ValidationService(Config config) {
+        artefactsVersion =
+            Objects.requireNonNull(
+                config.getConfigValue("en16931.artefacts.version").getValue()
+            );
+
         ciiSchematron =
             new SchematronResourceSCH(
-                new ClassPathResource("EN16931-CII-1.3.12.sch")
+                new ClassPathResource(
+                    String.format("EN16931-CII-%s.sch", artefactsVersion)
+                )
             );
 
         ublSchematron =
             new SchematronResourceSCH(
-                new ClassPathResource("EN16931-UBL-1.3.12.sch")
+                new ClassPathResource(
+                    String.format("EN16931-UBL-%s.sch", artefactsVersion)
+                )
             );
 
         if (!ciiSchematron.isValidSchematron()) {
@@ -66,15 +78,8 @@ public final class ValidationService implements IValidationService {
         var report = innerValidateSchematron(xmlSyntaxType, bytesFromSteam)
             .orElseThrow(RuntimeException::new);
 
-        String reportXML = new SVRLMarshaller().getAsString(report);
-
-        if (reportXML == null) {
-            throw new RuntimeException("validation failed unexpectedly");
-        }
-
         return new ValidationResult(
-            report,
-            reportXML,
+            new ValidationResultMetaData(xmlSyntaxType, artefactsVersion),
             getErrorsFromSchematronOutput(report),
             getWarningsFromSchematronOutput(report)
         );
@@ -88,7 +93,7 @@ public final class ValidationService implements IValidationService {
         );
     }
 
-    private List<FailedAssert> getErrorsFromSchematronOutput(
+    private List<@NonNull ValidationResultField> getErrorsFromSchematronOutput(
         @NonNull SchematronOutputType outputType
     ) {
         return outputType
@@ -99,10 +104,11 @@ public final class ValidationService implements IValidationService {
                 Objects.equals(((FailedAssert) element).getFlag(), "fatal")
             )
             .map(element -> (FailedAssert) element)
+            .map(ValidationResultField::fromFailedAssert)
             .toList();
     }
 
-    private List<FailedAssert> getWarningsFromSchematronOutput(
+    private List<@NonNull ValidationResultField> getWarningsFromSchematronOutput(
         @NonNull SchematronOutputType outputType
     ) {
         return outputType
@@ -113,6 +119,7 @@ public final class ValidationService implements IValidationService {
                 Objects.equals(((FailedAssert) element).getFlag(), "warning")
             )
             .map(element -> (FailedAssert) element)
+            .map(ValidationResultField::fromFailedAssert)
             .toList();
     }
 
