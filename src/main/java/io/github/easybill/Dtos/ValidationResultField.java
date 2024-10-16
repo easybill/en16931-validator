@@ -3,6 +3,7 @@ package io.github.easybill.Dtos;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.helger.schematron.svrl.jaxb.FailedAssert;
 import com.helger.schematron.svrl.jaxb.Text;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -18,6 +19,10 @@ public record ValidationResultField(
     @JsonProperty("rule_severity") @NonNull Severity severity,
     @JsonProperty("rule_messages") @NonNull List<@NonNull String> messages
 ) {
+    public ValidationResultField {
+        messages = Collections.unmodifiableList(messages);
+    }
+
     public static ValidationResultField fromFailedAssert(
         @NonNull FailedAssert failedAssert
     ) {
