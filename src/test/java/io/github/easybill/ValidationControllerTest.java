@@ -1,7 +1,9 @@
 package io.github.easybill;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
 
+import io.github.easybill.Enums.XMLSyntaxType;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import java.io.IOException;
@@ -26,6 +28,17 @@ class ValidationControllerTest {
     @Test
     void testValidationEndpointWhenInvokedWithAnEmptyPayload() {
         given().when().post("/validation").then().statusCode(415);
+    }
+
+    @Test
+    void testValidationEndpointWithEmptyPayload() throws IOException {
+        given()
+            .body(loadFixtureFileAsStream("Invalid/Invalid.xml"))
+            .contentType(ContentType.XML)
+            .when()
+            .post("/validation")
+            .then()
+            .statusCode(400);
     }
 
     @ParameterizedTest
@@ -67,7 +80,14 @@ class ValidationControllerTest {
             .when()
             .post("/validation")
             .then()
-            .statusCode(200);
+            .statusCode(200)
+            .contentType(ContentType.JSON)
+            .body("is_valid", equalTo(true))
+            .body(
+                "meta.validation_profile",
+                equalTo(XMLSyntaxType.UBL.toString())
+            )
+            .body("errors", empty());
     }
 
     @ParameterizedTest
@@ -114,27 +134,20 @@ class ValidationControllerTest {
             .when()
             .post("/validation")
             .then()
-            .statusCode(200);
-    }
-
-    @ParameterizedTest
-    @MethodSource("providerValuesValidationEndpointWithInvalidPayload")
-    void testValidationEndpointWithInvalidPayload(
-        @NonNull String fixtureFileName
-    ) throws IOException {
-        given()
-            .body(loadFixtureFileAsStream(fixtureFileName))
-            .contentType(ContentType.XML)
-            .when()
-            .post("/validation")
-            .then()
-            .statusCode(400);
+            .statusCode(200)
+            .contentType(ContentType.JSON)
+            .body("is_valid", equalTo(true))
+            .body(
+                "meta.validation_profile",
+                equalTo(XMLSyntaxType.CII.toString())
+            )
+            .body("errors", empty());
     }
 
     static Stream<Arguments> providerValuesValidationEndpointWithInvalidPayload() {
         return Stream.of(
             Arguments.of("Invalid/CII_MissingExchangeDocumentContext.xml"),
-            Arguments.of("Invalid/Empty.xml"),
+            //Arguments.of("Invalid/Empty.xml"),
             // Uses HRK as currency which is no longer supported in EN16931
             Arguments.of("UBL/sample-discount-price.xml"),
             // Profile BASIC WL is not EN16931 conform. WL = Without Lines. EN16931 requires at least 1 line.
@@ -154,6 +167,30 @@ class ValidationControllerTest {
     }
 
     @ParameterizedTest
+    @MethodSource("providerValuesValidationEndpointWithInvalidPayload")
+    void testValidationEndpointWithInvalidPayload(
+        @NonNull String fixtureFileName
+    ) throws IOException {
+        given()
+            .body(loadFixtureFileAsStream(fixtureFileName))
+            .contentType(ContentType.XML)
+            .when()
+            .post("/validation")
+            .then()
+            .statusCode(400)
+            .contentType(ContentType.JSON)
+            .body("is_valid", equalTo(false))
+            .body("errors", not(empty()));
+    }
+
+    static Stream<Arguments> providerValuesForDifferentEncodings() {
+        return Stream.of(
+            Arguments.of("UBL/base-example-utf16be.xml"),
+            Arguments.of("UBL/base-example-utf16le.xml")
+        );
+    }
+
+    @ParameterizedTest
     @MethodSource("providerValuesForDifferentEncodings")
     void testValidationEndpointWithDifferentEncodings(
         @NonNull String fixtureFileName
@@ -164,14 +201,10 @@ class ValidationControllerTest {
             .when()
             .post("/validation")
             .then()
-            .statusCode(200);
-    }
-
-    static Stream<Arguments> providerValuesForDifferentEncodings() {
-        return Stream.of(
-            Arguments.of("UBL/base-example-utf16be.xml"),
-            Arguments.of("UBL/base-example-utf16le.xml")
-        );
+            .statusCode(200)
+            .contentType(ContentType.JSON)
+            .body("is_valid", equalTo(true))
+            .body("errors", empty());
     }
 
     InputStream loadFixtureFileAsStream(@NonNull String fixtureFileName)

@@ -25,13 +25,15 @@ import org.mozilla.universalchardet.UniversalDetector;
 @Singleton
 public final class ValidationService implements IValidationService {
 
+    private final String artefactsVersion;
     private final SchematronResourceSCH ciiSchematron;
     private final SchematronResourceSCH ublSchematron;
 
     ValidationService(Config config) {
-        var artefactsVersion = Objects.requireNonNull(
-            config.getConfigValue("en16931.artefacts.version").getValue()
-        );
+        artefactsVersion =
+            Objects.requireNonNull(
+                config.getConfigValue("en16931.artefacts.version").getValue()
+            );
 
         ciiSchematron =
             new SchematronResourceSCH(
@@ -77,7 +79,7 @@ public final class ValidationService implements IValidationService {
             .orElseThrow(RuntimeException::new);
 
         return new ValidationResult(
-            new ValidationResultMetaData(),
+            new ValidationResultMetaData(xmlSyntaxType, artefactsVersion),
             getErrorsFromSchematronOutput(report),
             getWarningsFromSchematronOutput(report)
         );
