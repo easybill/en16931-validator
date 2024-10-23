@@ -28,6 +28,7 @@ dependencies {
     implementation("com.helger.commons:ph-commons:11.1.6")
     implementation("com.helger.schematron:ph-schematron-api:7.1.0")
     implementation("com.helger.schematron:ph-schematron-xslt:8.0.0")
+    implementation("commons-io:commons-io:2.17.0")
 
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.rest-assured:rest-assured")

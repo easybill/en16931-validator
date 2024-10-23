@@ -41,6 +41,20 @@ class ValidationControllerTest {
             .statusCode(400);
     }
 
+    @Test
+    void testValidationEndpointWithPayloadIncludingBOM() throws IOException {
+        given()
+            .body(loadFixtureFileAsStream("CII/EN16931_Einfach_BOM.xml"))
+            .contentType(ContentType.XML)
+            .when()
+            .post("/validation")
+            .then()
+            .statusCode(200)
+            .contentType(ContentType.JSON)
+            .body("is_valid", equalTo(true))
+            .body("errors", empty());
+    }
+
     @ParameterizedTest
     @ValueSource(
         strings = {
