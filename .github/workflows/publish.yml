@@ -36,14 +36,3 @@ jobs:
 
       - name: Build images and push to dockerhub
         run: docker buildx build --platform=linux/amd64 --platform=linux/arm64 -t easybill/en16931-validator:${{github.ref_name}} -t easybill/en16931-validator:latest  . --push
-
-      - name: Push current readme.md as docker hub repository description
-        uses: christian-korneck/update-container-description-action@v1
-        env:
-          DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKER_PASS: ${{ secrets.DOCKERHUB_TOKEN }}
-        with:
-          destination_container_repo: easybill/en16931-validator
-          provider: dockerhub
-          short_description: 'A small docker service to provide a validation service for EN16931 schematron rules'
-          readme_file: 'README.md'
