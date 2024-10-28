@@ -11,6 +11,7 @@ import io.github.easybill.Dtos.ValidationResultField;
 import io.github.easybill.Dtos.ValidationResultMetaData;
 import io.github.easybill.Enums.XMLSyntaxType;
 import io.github.easybill.Exceptions.InvalidXmlException;
+import io.github.easybill.Exceptions.ParsingException;
 import jakarta.inject.Singleton;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -72,10 +73,15 @@ public final class ValidationService implements IValidationService {
             throw new InvalidXmlException();
         }
 
+        xml = removeBOM(xml);
+
         var xmlSyntaxType = determineXmlSyntax(xml)
             .orElseThrow(InvalidXmlException::new);
 
-        var report = innerValidateSchematron(xmlSyntaxType, bytesFromSteam)
+        var report = innerValidateSchematron(
+            xmlSyntaxType,
+            xml.getBytes(charset)
+        )
             .orElseThrow(RuntimeException::new);
 
         return new ValidationResult(
@@ -171,21 +177,45 @@ public final class ValidationService implements IValidationService {
             .find();
     }
 
+    private @NonNull String removeBOM(@NonNull String $payload) {
+        String UTF8_BOM = "\uFEFF";
+        String UTF16LE_BOM = "\uFFFE";
+        String UTF16BE_BOM = "\uFEFF";
+
+        if ($payload.isEmpty()) {
+            return $payload;
+        }
+
+        if (
+            $payload.startsWith(UTF8_BOM) ||
+            $payload.startsWith(UTF16LE_BOM) ||
+            $payload.startsWith(UTF16BE_BOM)
+        ) {
+            return $payload.substring(1);
+        }
+
+        return $payload;
+    }
+
     private Optional<SchematronOutputType> innerValidateSchematron(
         @NonNull XMLSyntaxType xmlSyntaxType,
         byte[] bytes
     ) throws Exception {
-        return switch (xmlSyntaxType) {
-            case CII -> Optional.ofNullable(
-                ciiSchematron.applySchematronValidationToSVRL(
-                    new ByteArrayWrapper(bytes, false)
-                )
-            );
-            case UBL -> Optional.ofNullable(
-                ublSchematron.applySchematronValidationToSVRL(
-                    new ByteArrayWrapper(bytes, false)
-                )
-            );
-        };
+        try {
+            return switch (xmlSyntaxType) {
+                case CII -> Optional.ofNullable(
+                    ciiSchematron.applySchematronValidationToSVRL(
+                        new ByteArrayWrapper(bytes, false)
+                    )
+                );
+                case UBL -> Optional.ofNullable(
+                    ublSchematron.applySchematronValidationToSVRL(
+                        new ByteArrayWrapper(bytes, false)
+                    )
+                );
+            };
+        } catch (IllegalArgumentException exception) {
+            throw new ParsingException(exception);
+        }
     }
 }

@@ -1,5 +1,7 @@
 package io.github.easybill.Interceptors;
 
+import io.github.easybill.Exceptions.InvalidXmlException;
+import io.github.easybill.Exceptions.ParsingException;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
@@ -17,6 +19,16 @@ public class GlobalExceptionInterceptor implements ExceptionMapper<Throwable> {
     public Response toResponse(Throwable exception) {
         if (exception instanceof WebApplicationException) {
             return ((WebApplicationException) exception).getResponse();
+        }
+
+        if (exception instanceof InvalidXmlException) {
+            return Response.status(422, "Unprocessable Content").build();
+        }
+
+        if (exception instanceof ParsingException) {
+            return Response
+                .status(422, "Unprocessable Content - Parsing Error")
+                .build();
         }
 
         LOGGER.error("Encountered an exception:", exception);

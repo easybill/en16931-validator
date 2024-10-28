@@ -2,7 +2,6 @@ package io.github.easybill.Controllers;
 
 import io.github.easybill.Contracts.IValidationService;
 import io.github.easybill.Dtos.ValidationResult;
-import io.github.easybill.Exceptions.InvalidXmlException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -42,23 +41,17 @@ public final class ValidationController {
     public RestResponse<@NonNull ValidationResult> validation(
         InputStream xmlInputStream
     ) throws Exception {
-        try {
-            ValidationResult result = validationService.validateXml(
-                xmlInputStream
-            );
+        ValidationResult result = validationService.validateXml(xmlInputStream);
 
-            if (result.isValid()) {
-                return RestResponse.ResponseBuilder
-                    .ok(result, MediaType.APPLICATION_JSON)
-                    .build();
-            }
-
+        if (result.isValid()) {
             return RestResponse.ResponseBuilder
-                .create(RestResponse.Status.BAD_REQUEST, result)
-                .type(MediaType.APPLICATION_JSON)
+                .ok(result, MediaType.APPLICATION_JSON)
                 .build();
-        } catch (InvalidXmlException exception) {
-            return RestResponse.status(RestResponse.Status.BAD_REQUEST);
         }
+
+        return RestResponse.ResponseBuilder
+            .create(RestResponse.Status.BAD_REQUEST, result)
+            .type(MediaType.APPLICATION_JSON)
+            .build();
     }
 }

@@ -38,7 +38,7 @@ class ValidationControllerTest {
             .when()
             .post("/validation")
             .then()
-            .statusCode(400);
+            .statusCode(422);
     }
 
     @Test
@@ -53,6 +53,18 @@ class ValidationControllerTest {
             .contentType(ContentType.JSON)
             .body("is_valid", equalTo(true))
             .body("errors", empty());
+    }
+
+    @Test
+    void testValidationEndpointWithPayloadIncludingCharsInProlog()
+        throws IOException {
+        given()
+            .body(loadFixtureFileAsStream("Invalid/EN16931_Einfach_BOM.xml"))
+            .contentType(ContentType.XML)
+            .when()
+            .post("/validation")
+            .then()
+            .statusCode(422);
     }
 
     @ParameterizedTest
