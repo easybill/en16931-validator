@@ -203,7 +203,7 @@ class ValidationControllerTest {
             .when()
             .post("/validation")
             .then()
-            .statusCode(400)
+            .statusCode(200)
             .contentType(ContentType.JSON)
             .body("is_valid", equalTo(false))
             .body("errors", not(empty()));
