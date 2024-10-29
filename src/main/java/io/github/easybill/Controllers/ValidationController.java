@@ -33,24 +33,19 @@ public final class ValidationController {
                 description = "The submitted XML is valid "
             ),
             @APIResponse(
-                responseCode = "400",
-                description = "Schematron validation for the submitted XML failed. Response will contain the failed assertions"
+                responseCode = "422",
+                description = "The provided XML could not be used for validation"
             ),
         }
     )
     public RestResponse<@NonNull ValidationResult> validation(
         InputStream xmlInputStream
     ) throws Exception {
-        ValidationResult result = validationService.validateXml(xmlInputStream);
-
-        if (result.isValid()) {
-            return RestResponse.ResponseBuilder
-                .ok(result, MediaType.APPLICATION_JSON)
-                .build();
-        }
-
         return RestResponse.ResponseBuilder
-            .create(RestResponse.Status.BAD_REQUEST, result)
+            .create(
+                RestResponse.Status.OK,
+                validationService.validateXml(xmlInputStream)
+            )
             .type(MediaType.APPLICATION_JSON)
             .build();
     }
