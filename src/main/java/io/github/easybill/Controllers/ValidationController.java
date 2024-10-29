@@ -34,7 +34,7 @@ public final class ValidationController {
             ),
             @APIResponse(
                 responseCode = "422",
-                description = "The provided XML could not used for validation"
+                description = "The provided XML could not be used for validation"
             ),
         }
     )
