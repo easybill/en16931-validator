@@ -1,10 +1,8 @@
 package io.github.easybill.Interceptors;
 
 import io.github.easybill.Contracts.IExceptionNotifier;
-import io.github.easybill.Contracts.IStageService;
 import io.github.easybill.Exceptions.InvalidXmlException;
 import io.github.easybill.Exceptions.ParsingException;
-import jakarta.enterprise.inject.Instance;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
@@ -15,17 +13,14 @@ import org.jboss.logging.Logger;
 public final class GlobalExceptionInterceptor
     implements ExceptionMapper<Throwable> {
 
-    private final Instance<IExceptionNotifier> exceptionNotifiers;
+    private final IExceptionNotifier exceptionNotifier;
 
     private static final Logger logger = Logger.getLogger(
         GlobalExceptionInterceptor.class
     );
 
-    public GlobalExceptionInterceptor(
-        IStageService stageService,
-        Instance<IExceptionNotifier> exceptionNotifiers
-    ) {
-        this.exceptionNotifiers = exceptionNotifiers;
+    public GlobalExceptionInterceptor(IExceptionNotifier exceptionNotifier) {
+        this.exceptionNotifier = exceptionNotifier;
     }
 
     @Override
@@ -44,9 +39,7 @@ public final class GlobalExceptionInterceptor
                 .build();
         }
 
-        exceptionNotifiers.forEach(exceptionNotifier ->
-            exceptionNotifier.notify(exception)
-        );
+        exceptionNotifier.notify(exception);
 
         logger.error("Encountered an exception:", exception);
 
