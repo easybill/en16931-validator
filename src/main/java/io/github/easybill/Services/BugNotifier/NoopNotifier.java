@@ -1,4 +1,4 @@
-package io.github.easybill.Services.Notifier;
+package io.github.easybill.Services.BugNotifier;
 
 import io.github.easybill.Contracts.IExceptionNotifier;
 

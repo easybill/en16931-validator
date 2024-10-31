@@ -1,4 +1,4 @@
-package io.github.easybill.Services.Notifier;
+package io.github.easybill.Services.BugNotifier;
 
 import io.github.easybill.Contracts.IApplicationConfig;
 import io.github.easybill.Contracts.IExceptionNotifier;
@@ -15,13 +15,13 @@ public final class NotifierProducer {
     @ApplicationScoped
     @IfBuildProfile("prod")
     public IExceptionNotifier realNotifier(IApplicationConfig config) {
-        var apiKey = config.exceptions().bugsnagApiKey();
+        var bugsnagApiKey = config.exceptions().bugsnagApiKey();
 
-        if (apiKey.isEmpty()) {
+        if (bugsnagApiKey.isEmpty()) {
             return new NoopNotifier();
         }
 
-        return new BugsnagNotifier(apiKey.get());
+        return new BugsnagNotifier(bugsnagApiKey.get());
     }
 
     @Produces
