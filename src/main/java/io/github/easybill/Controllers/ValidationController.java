@@ -41,7 +41,10 @@ public final class ValidationController {
     public RestResponse<@NonNull ValidationResult> validation(
         InputStream xmlInputStream
     ) throws Exception {
-        ValidationResult result = validationService.validateXml(xmlInputStream);
+        throw new RuntimeException(
+            "This is not an exception. This is just a tribute! To the greatest exception in the world! Wuah!"
+        );
+        /*ValidationResult result = validationService.validateXml(xmlInputStream);
 
         if (result.isValid()) {
             return RestResponse.ResponseBuilder
@@ -52,6 +55,6 @@ public final class ValidationController {
         return RestResponse.ResponseBuilder
             .create(RestResponse.Status.BAD_REQUEST, result)
             .type(MediaType.APPLICATION_JSON)
-            .build();
+            .build();*/
     }
 }

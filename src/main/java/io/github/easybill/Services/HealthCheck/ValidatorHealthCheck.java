@@ -1,9 +1,9 @@
 package io.github.easybill.Services.HealthCheck;
 
+import io.github.easybill.Contracts.IApplicationConfig;
 import io.github.easybill.Contracts.IValidationService;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.util.Objects;
-import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
@@ -13,12 +13,12 @@ import org.eclipse.microprofile.health.Liveness;
 @ApplicationScoped
 public final class ValidatorHealthCheck implements HealthCheck {
 
-    final Config config;
+    final IApplicationConfig config;
     final IValidationService validationService;
 
     public ValidatorHealthCheck(
         IValidationService validationService,
-        Config config
+        IApplicationConfig config
     ) {
         this.config = config;
         this.validationService = validationService;
@@ -32,9 +32,7 @@ public final class ValidatorHealthCheck implements HealthCheck {
 
         response.withData(
             "artefactsVersion",
-            Objects.requireNonNull(
-                config.getConfigValue("en16931.artefacts.version").getValue()
-            )
+            Objects.requireNonNull(config.artefacts().version())
         );
 
         if (this.validationService.isLoadedSchematronValid()) {

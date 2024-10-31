@@ -1,6 +1,6 @@
 plugins {
     java
-    id("io.quarkus")
+    id("io.quarkus") version "3.16.1"
     id("com.diffplug.spotless") version "6.25.0"
     id("com.github.spotbugs") version "6.0.15"
     id("org.checkerframework") version "0.6.44"
@@ -28,7 +28,10 @@ dependencies {
     implementation("com.helger.commons:ph-commons:11.1.6")
     implementation("com.helger.schematron:ph-schematron-api:7.1.0")
     implementation("com.helger.schematron:ph-schematron-xslt:8.0.0")
+    implementation("io.quarkus:quarkus-arc")
+    implementation("com.bugsnag:bugsnag:3.+")
 
+    testImplementation("io.quarkus:quarkus-junit5-mockito")
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.rest-assured:rest-assured")
     testImplementation("org.hamcrest:hamcrest:2.2")

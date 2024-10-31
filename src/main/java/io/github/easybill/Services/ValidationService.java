@@ -5,6 +5,7 @@ import com.helger.commons.io.resource.ClassPathResource;
 import com.helger.schematron.sch.SchematronResourceSCH;
 import com.helger.schematron.svrl.jaxb.FailedAssert;
 import com.helger.schematron.svrl.jaxb.SchematronOutputType;
+import io.github.easybill.Contracts.IApplicationConfig;
 import io.github.easybill.Contracts.IValidationService;
 import io.github.easybill.Dtos.ValidationResult;
 import io.github.easybill.Dtos.ValidationResultField;
@@ -20,7 +21,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.eclipse.microprofile.config.Config;
 import org.mozilla.universalchardet.UniversalDetector;
 
 @Singleton
@@ -30,11 +30,8 @@ public final class ValidationService implements IValidationService {
     private final SchematronResourceSCH ciiSchematron;
     private final SchematronResourceSCH ublSchematron;
 
-    ValidationService(Config config) {
-        artefactsVersion =
-            Objects.requireNonNull(
-                config.getConfigValue("en16931.artefacts.version").getValue()
-            );
+    ValidationService(IApplicationConfig config) {
+        artefactsVersion = config.artefacts().version();
 
         ciiSchematron =
             new SchematronResourceSCH(
@@ -60,9 +57,8 @@ public final class ValidationService implements IValidationService {
     }
 
     @Override
-    public @NonNull ValidationResult validateXml(
-        @NonNull InputStream inputStream
-    ) throws Exception {
+    public ValidationResult validateXml(InputStream inputStream)
+        throws Exception {
         var bytesFromSteam = inputStream.readAllBytes();
 
         var charset = determineCharsetForXmlPayload(bytesFromSteam);

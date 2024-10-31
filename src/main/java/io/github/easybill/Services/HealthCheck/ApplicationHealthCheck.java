@@ -1,9 +1,9 @@
 package io.github.easybill.Services.HealthCheck;
 
+import io.github.easybill.Contracts.IApplicationConfig;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.lang.management.ManagementFactory;
 import java.util.Objects;
-import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
@@ -13,9 +13,9 @@ import org.eclipse.microprofile.health.Liveness;
 @ApplicationScoped
 public final class ApplicationHealthCheck implements HealthCheck {
 
-    final Config config;
+    final IApplicationConfig config;
 
-    public ApplicationHealthCheck(Config config) {
+    public ApplicationHealthCheck(IApplicationConfig config) {
         this.config = config;
     }
 
@@ -30,12 +30,7 @@ public final class ApplicationHealthCheck implements HealthCheck {
 
         return response
             .up()
-            .withData(
-                "version",
-                Objects.requireNonNull(
-                    config.getConfigValue("application.version").getValue()
-                )
-            )
+            .withData("version", Objects.requireNonNull(config.version()))
             .withData("osName", osBean.getName())
             .withData("osArch", osBean.getArch())
             .withData(
