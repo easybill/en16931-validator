@@ -31,7 +31,6 @@ dependencies {
     implementation("io.quarkus:quarkus-arc")
     implementation("com.bugsnag:bugsnag:3.+")
 
-    testImplementation("io.quarkus:quarkus-junit5-mockito")
     testImplementation("io.quarkus:quarkus-junit5")
     testImplementation("io.rest-assured:rest-assured")
     testImplementation("org.hamcrest:hamcrest:2.2")
