@@ -87,6 +87,22 @@ final class EN16931Validator
 }
 ```
 
+## Insights
+You may enable bug reporting via Bugsnag by supplying the env-variable `BUGSNAG_API_KEY`.
+```yaml
+  en16931-validator:
+    image: 'easybill/en16931-validator:latest'
+    ports:
+      - '8081:8080'
+    environment:
+        JAVA_TOOL_OPTIONS: -Xmx512m
+        BUGSNAG_API_KEY: <YOUR_API_KEY>
+    healthcheck:
+      test: curl --fail http://localhost:8081/health || exit 0
+      interval: 10s
+      retries: 6
+```
+
 ## Issues & Contribution
 Feel free to create pull-requests or issues if you have trouble with this service or any related resources. 
 

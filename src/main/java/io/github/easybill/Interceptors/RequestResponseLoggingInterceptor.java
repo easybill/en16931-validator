@@ -9,7 +9,7 @@ import java.io.IOException;
 import org.jboss.logging.Logger;
 
 @Provider
-public class RequestResponseLoggingInterceptor
+public final class RequestResponseLoggingInterceptor
     implements ContainerRequestFilter, ContainerResponseFilter {
 
     private static final Logger logger = Logger.getLogger(
