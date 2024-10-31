@@ -57,8 +57,9 @@ public final class ValidationService implements IValidationService {
     }
 
     @Override
-    public ValidationResult validateXml(InputStream inputStream)
-        throws Exception {
+    public @NonNull ValidationResult validateXml(
+        @NonNull InputStream inputStream
+    ) throws Exception {
         var bytesFromSteam = inputStream.readAllBytes();
 
         var charset = determineCharsetForXmlPayload(bytesFromSteam);
