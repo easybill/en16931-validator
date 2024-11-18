@@ -5,6 +5,7 @@ import io.github.easybill.Contracts.IExceptionNotifier;
 import io.github.easybill.Interceptors.GlobalExceptionInterceptor;
 import io.quarkus.arc.DefaultBean;
 import io.quarkus.arc.profile.IfBuildProfile;
+import io.quarkus.runtime.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
 import jakarta.ws.rs.Produces;
@@ -17,6 +18,7 @@ public final class NotifierProducer {
         GlobalExceptionInterceptor.class
     );
 
+    @Startup
     @Produces
     @ApplicationScoped
     @IfBuildProfile("prod")
@@ -25,7 +27,7 @@ public final class NotifierProducer {
 
         if (bugsnagApiKey.isEmpty()) {
             logger.info(
-                "Notifier: NOOP notifier loaded as no API-Key was provided"
+                "Notifier: NOOP notifier loaded as no BUGSNAG API-Key was provided"
             );
 
             return new NoopNotifier();
@@ -36,6 +38,7 @@ public final class NotifierProducer {
         return new BugsnagNotifier(bugsnagApiKey.get());
     }
 
+    @Startup
     @Produces
     @DefaultBean
     @ApplicationScoped
