@@ -64,7 +64,27 @@ class ValidationControllerTest {
             .when()
             .post("/validation")
             .then()
-            .statusCode(422);
+            .statusCode(200);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "CII/CII_empty_tags.xml" })
+    void testDocumentWithEmptyTags(@NonNull String fixtureFileName)
+        throws IOException {
+        given()
+            .body(loadFixtureFileAsStream(fixtureFileName))
+            .contentType(ContentType.XML)
+            .when()
+            .post("/validation")
+            .then()
+            .statusCode(200)
+            .contentType(ContentType.JSON)
+            .body("is_valid", equalTo(false))
+            .body(
+                "meta.validation_profile",
+                equalTo(XMLSyntaxType.CII.toString())
+            )
+            .body("errors", not(empty()));
     }
 
     @ParameterizedTest
@@ -147,7 +167,6 @@ class ValidationControllerTest {
             "CII/CII_ZUGFeRD_23_XRECHNUNG_Einfach.xml",
             "CII/CII_ZUGFeRD_23_XRECHNUNG_Elektron.xml",
             "CII/CII_ZUGFeRD_23_XRECHNUNG_Reisekostenabrechnung.xml",
-            "CII/XRechnung-O.xml",
             "CII/CII_ZUGFeRD_23_EXTENDED_Rechnungskorrektur.xml",
         }
     )
@@ -188,7 +207,8 @@ class ValidationControllerTest {
             Arguments.of(
                 "CII/CII_ZUGFeRD_23_EXTENDED_Projektabschlussrechnung.xml"
             ),
-            Arguments.of("CII/CII_ZUGFeRD_23_EXTENDED_Warenrechnung.xml")
+            Arguments.of("CII/CII_ZUGFeRD_23_EXTENDED_Warenrechnung.xml"),
+            Arguments.of("CII/XRechnung-O.xml")
         );
     }
 

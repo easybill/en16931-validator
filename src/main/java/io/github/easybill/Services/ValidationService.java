@@ -19,7 +19,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.regex.Pattern;
+import net.sf.saxon.type.ValidationException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.mozilla.universalchardet.UniversalDetector;
 
@@ -66,13 +66,14 @@ public final class ValidationService implements IValidationService {
 
         var xml = new String(bytesFromSteam, charset);
 
-        if (isXmlInvalid(xml)) {
+        if (xml.isBlank()) {
             throw new InvalidXmlException();
         }
 
-        xml = removeBOM(xml);
+        xml = XMLSanitizer.sanitize(xml, charset);
 
-        var xmlSyntaxType = determineXmlSyntax(xml)
+        var xmlSyntaxType = XMLSyntaxGuesser
+            .tryGuessSyntax(xml)
             .orElseThrow(InvalidXmlException::new);
 
         var report = innerValidateSchematron(
@@ -144,56 +145,6 @@ public final class ValidationService implements IValidationService {
         throw new InvalidXmlException();
     }
 
-    private boolean isXmlInvalid(@NonNull String xml) {
-        return xml.isBlank() || (!checkIfUblXml(xml) && !checkIfCiiXml(xml));
-    }
-
-    private Optional<XMLSyntaxType> determineXmlSyntax(@NonNull String xml) {
-        if (checkIfCiiXml(xml)) {
-            return Optional.of(XMLSyntaxType.CII);
-        }
-
-        if (checkIfUblXml(xml)) {
-            return Optional.of(XMLSyntaxType.UBL);
-        }
-
-        return Optional.empty();
-    }
-
-    private boolean checkIfCiiXml(@NonNull CharSequence payload) {
-        return Pattern
-            .compile("[<:](CrossIndustryInvoice)")
-            .matcher(payload)
-            .find();
-    }
-
-    private boolean checkIfUblXml(@NonNull CharSequence payload) {
-        return Pattern
-            .compile("[<:](Invoice|CreditNote)")
-            .matcher(payload)
-            .find();
-    }
-
-    private @NonNull String removeBOM(@NonNull String $payload) {
-        String UTF8_BOM = "\uFEFF";
-        String UTF16LE_BOM = "\uFFFE";
-        String UTF16BE_BOM = "\uFEFF";
-
-        if ($payload.isEmpty()) {
-            return $payload;
-        }
-
-        if (
-            $payload.startsWith(UTF8_BOM) ||
-            $payload.startsWith(UTF16LE_BOM) ||
-            $payload.startsWith(UTF16BE_BOM)
-        ) {
-            return $payload.substring(1);
-        }
-
-        return $payload;
-    }
-
     private Optional<SchematronOutputType> innerValidateSchematron(
         @NonNull XMLSyntaxType xmlSyntaxType,
         byte[] bytes
@@ -213,6 +164,8 @@ public final class ValidationService implements IValidationService {
             };
         } catch (IllegalArgumentException exception) {
             throw new ParsingException(exception);
+        } catch (ValidationException exception) {
+            throw new InvalidXmlException(exception);
         }
     }
 }
