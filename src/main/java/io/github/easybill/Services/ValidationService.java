@@ -70,7 +70,7 @@ public final class ValidationService implements IValidationService {
             throw new InvalidXmlException();
         }
 
-        xml = XMLSanitizer.sanitize(xml);
+        xml = XMLSanitizer.sanitize(xml, charset);
 
         var xmlSyntaxType = XMLSyntaxGuesser
             .tryGuessSyntax(xml)

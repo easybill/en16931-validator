@@ -1,13 +1,13 @@
 package io.github.easybill.Services;
 
 import io.github.easybill.Exceptions.XmlSanitizationException;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.*;
+import java.nio.charset.Charset;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -21,11 +21,14 @@ import org.xml.sax.SAXException;
 
 public final class XMLSanitizer {
 
-    public static @NonNull String sanitize(@NonNull String xml)
-        throws XmlSanitizationException {
+    public static @NonNull String sanitize(
+        @NonNull String xml,
+        @NonNull Charset charset
+    ) throws XmlSanitizationException {
         try {
             return removeEmptyTags(
-                removeInvalidCharsFromProlog(removeBOM(xml))
+                removeInvalidCharsFromProlog(removeBOM(xml)),
+                charset
             );
         } catch (Exception exception) {
             throw new XmlSanitizationException(exception);
@@ -64,31 +67,48 @@ public final class XMLSanitizer {
         return xml;
     }
 
-    private static @NonNull String removeEmptyTags(@NonNull String xml)
+    private static @NonNull String removeEmptyTags(
+        @NonNull String xml,
+        @NonNull Charset charset
+    )
         throws ParserConfigurationException, IOException, SAXException, TransformerException {
+        byte[] xmlBytes = xml.getBytes(charset);
+
         var builderFactory = DocumentBuilderFactory.newInstance();
         builderFactory.setNamespaceAware(true);
         builderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
         DocumentBuilder db = builderFactory.newDocumentBuilder();
 
-        Document document = db.parse(new InputSource(new StringReader(xml)));
+        try (
+            InputStream inputStream = new ByteArrayInputStream(xmlBytes);
+            Reader reader = new InputStreamReader(inputStream, charset)
+        ) {
+            Document document = db.parse(new InputSource(reader));
 
-        removeEmptyElements(document.getDocumentElement());
+            removeEmptyElements(document.getDocumentElement());
 
-        TransformerFactory transformerFactory =
-            TransformerFactory.newInstance();
+            TransformerFactory transformerFactory =
+                TransformerFactory.newInstance();
 
-        Transformer transformer = transformerFactory.newTransformer();
+            Transformer transformer = transformerFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.ENCODING, charset.name());
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
 
-        StringWriter writer = new StringWriter();
+            try (
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                Writer writer = new OutputStreamWriter(outputStream, charset)
+            ) {
+                transformer.transform(
+                    new DOMSource(document),
+                    new StreamResult(writer)
+                );
+                writer.flush();
 
-        transformer.transform(
-            new DOMSource(document),
-            new StreamResult(writer)
-        );
-
-        return writer.toString();
+                return outputStream.toString(charset);
+            }
+        }
     }
 
     private static void removeEmptyElements(Element element) {
