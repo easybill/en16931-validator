@@ -68,6 +68,26 @@ class ValidationControllerTest {
     }
 
     @ParameterizedTest
+    @ValueSource(strings = { "CII/CII_empty_tags.xml" })
+    void testDocumentWithEmptyTags(@NonNull String fixtureFileName)
+        throws IOException {
+        given()
+            .body(loadFixtureFileAsStream(fixtureFileName))
+            .contentType(ContentType.XML)
+            .when()
+            .post("/validation")
+            .then()
+            .statusCode(200)
+            .contentType(ContentType.JSON)
+            .body("is_valid", equalTo(false))
+            .body(
+                "meta.validation_profile",
+                equalTo(XMLSyntaxType.CII.toString())
+            )
+            .body("errors", not(empty()));
+    }
+
+    @ParameterizedTest
     @ValueSource(
         strings = {
             "UBL/Allowance-example.xml",

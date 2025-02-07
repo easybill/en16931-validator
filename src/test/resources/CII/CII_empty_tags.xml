@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<rsm:CrossIndustryInvoice xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                          xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:100"
+                          xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100"
+                          xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"
+                          xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"
+                          xmlns="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100">
+
+    <rsm:ExchangedDocumentContext>
+        <ram:TestIndicator>
+            <udt:Indicator>false</udt:Indicator>
+        </ram:TestIndicator>
+        <ram:GuidelineSpecifiedDocumentContextParameter>
+            <ram:ID>urn:cen.eu:en16931:2017</ram:ID>
+        </ram:GuidelineSpecifiedDocumentContextParameter>
+    </rsm:ExchangedDocumentContext>
+    <rsm:ExchangedDocument>
+        <ram:ID>914077854</ram:ID>
+        <ram:Name>GUTSCHRIFT</ram:Name>
+        <ram:TypeCode>389</ram:TypeCode>
+        <ram:IssueDateTime>
+            <udt:DateTimeString format="102">20241223</udt:DateTimeString>
+        </ram:IssueDateTime>
+        <ram:IncludedNote>
+            <ram:Content>Bezüglich der späteren Entgeltminderung verweisen wir auf die Rabattkonditionen in der
+                jeweiligen aktuellen Fassung
+            </ram:Content>
+            <ram:SubjectCode>REG</ram:SubjectCode>
+        </ram:IncludedNote>
+        <ram:IncludedNote>
+            <ram:Content>sofort zahlbar ohne Abzug</ram:Content>
+            <ram:SubjectCode>REG</ram:SubjectCode>
+        </ram:IncludedNote>
+    </rsm:ExchangedDocument>
+    <rsm:SupplyChainTradeTransaction>
+        <ram:IncludedSupplyChainTradeLineItem>
+            <ram:AssociatedDocumentLineDocument>
+                <ram:LineID>000100</ram:LineID>
+            </ram:AssociatedDocumentLineDocument>
+            <ram:SpecifiedTradeProduct>
+                <ram:SellerAssignedID>00000079157</ram:SellerAssignedID>
+                <ram:Name>Abrechnung Example Direct</ram:Name>
+            </ram:SpecifiedTradeProduct>
+            <ram:SpecifiedLineTradeAgreement>
+                <ram:BuyerOrderReferencedDocument>
+                    <ram:IssuerAssignedID>Vergüt. Example Direct - 23.12.2024</ram:IssuerAssignedID>
+                </ram:BuyerOrderReferencedDocument>
+                <ram:AdditionalReferencedDocument>
+                    <ram:IssuerAssignedID>0803045309</ram:IssuerAssignedID>
+                    <ram:TypeCode>130</ram:TypeCode>
+                    <ram:ReferenceTypeCode>VN</ram:ReferenceTypeCode>
+                </ram:AdditionalReferencedDocument>
+                <ram:GrossPriceProductTradePrice>
+                    <ram:ChargeAmount>57.6700</ram:ChargeAmount>
+                </ram:GrossPriceProductTradePrice>
+                <ram:NetPriceProductTradePrice>
+                    <ram:ChargeAmount>57.6700</ram:ChargeAmount>
+                </ram:NetPriceProductTradePrice>
+            </ram:SpecifiedLineTradeAgreement>
+            <ram:SpecifiedLineTradeDelivery>
+                <ram:BilledQuantity unitCode="C62">1.0000</ram:BilledQuantity>
+            </ram:SpecifiedLineTradeDelivery>
+            <ram:SpecifiedLineTradeSettlement>
+                <ram:ApplicableTradeTax>
+                    <ram:TypeCode>VAT</ram:TypeCode>
+                    <ram:CategoryCode>S</ram:CategoryCode>
+                    <ram:RateApplicablePercent/>
+                </ram:ApplicableTradeTax>
+                <ram:SpecifiedTradeSettlementLineMonetarySummation>
+                    <ram:LineTotalAmount>57.67</ram:LineTotalAmount>
+                </ram:SpecifiedTradeSettlementLineMonetarySummation>
+            </ram:SpecifiedLineTradeSettlement>
+        </ram:IncludedSupplyChainTradeLineItem>
+        <ram:ApplicableHeaderTradeAgreement>
+            <ram:BuyerReference>Vergüt. Example Direct - 23.12.2024</ram:BuyerReference>
+            <ram:SellerTradeParty>
+                <ram:GlobalID schemeID="0088">4330731000007</ram:GlobalID>
+                <ram:Name>Example Seller</ram:Name>
+                <ram:DefinedTradeContact>
+                    <ram:PersonName>Example Debitorenbuchhaltung</ram:PersonName>
+                    <ram:DepartmentName>Example Debitorenbuchhaltung</ram:DepartmentName>
+                    <ram:TelephoneUniversalCommunication>
+                        <ram:CompleteNumber>06071 2040</ram:CompleteNumber>
+                    </ram:TelephoneUniversalCommunication>
+                    <ram:EmailURIUniversalCommunication>
+                        <ram:URIID>Vertriebszentrale@Example.de</ram:URIID>
+                    </ram:EmailURIUniversalCommunication>
+                </ram:DefinedTradeContact>
+                <ram:PostalTradeAddress>
+                    <ram:PostcodeCode>64807</ram:PostcodeCode>
+                    <ram:LineOne>Robert-Bosch-Str. 13</ram:LineOne>
+                    <ram:CityName>Dieburg</ram:CityName>
+                    <ram:CountryID>DE</ram:CountryID>
+                </ram:PostalTradeAddress>
+                <ram:SpecifiedTaxRegistration>
+                    <ram:ID schemeID="VA">DE111746670</ram:ID>
+                </ram:SpecifiedTaxRegistration>
+            </ram:SellerTradeParty>
+            <ram:BuyerTradeParty>
+                <ram:ID>0000000000</ram:ID>
+                <ram:Name>Example </ram:Name>
+                <ram:PostalTradeAddress>
+                    <ram:PostcodeCode>25813</ram:PostcodeCode>
+                    <ram:LineOne>Examplestreet</ram:LineOne>
+                    <ram:CityName>Husum</ram:CityName>
+                    <ram:CountryID>DE</ram:CountryID>
+                </ram:PostalTradeAddress>
+            </ram:BuyerTradeParty>
+            <ram:BuyerOrderReferencedDocument>
+                <ram:IssuerAssignedID>Vergüt. Example Direct - 23.12.2024</ram:IssuerAssignedID>
+            </ram:BuyerOrderReferencedDocument>
+            <ram:AdditionalReferencedDocument>
+                <ram:IssuerAssignedID>0803045309</ram:IssuerAssignedID>
+                <ram:TypeCode>130</ram:TypeCode>
+            </ram:AdditionalReferencedDocument>
+        </ram:ApplicableHeaderTradeAgreement>
+        <ram:ApplicableHeaderTradeDelivery>
+            <ram:ShipToTradeParty>
+                <ram:ID>0000000000</ram:ID>
+                <ram:Name>Example GmbH</ram:Name>
+                <ram:PostalTradeAddress>
+                    <ram:PostcodeCode>25813</ram:PostcodeCode>
+                    <ram:LineOne>Examplestreet</ram:LineOne>
+                    <ram:CityName>Example City</ram:CityName>
+                    <ram:CountryID>DE</ram:CountryID>
+                </ram:PostalTradeAddress>
+            </ram:ShipToTradeParty>
+            <ram:ActualDeliverySupplyChainEvent>
+                <ram:OccurrenceDateTime>
+                    <udt:DateTimeString format="102">20241223</udt:DateTimeString>
+                </ram:OccurrenceDateTime>
+            </ram:ActualDeliverySupplyChainEvent>
+            <ram:DeliveryNoteReferencedDocument/>
+        </ram:ApplicableHeaderTradeDelivery>
+        <ram:ApplicableHeaderTradeSettlement>
+            <ram:InvoiceCurrencyCode>EUR</ram:InvoiceCurrencyCode>
+            <ram:InvoiceeTradeParty>
+                <ram:ID>0000000000</ram:ID>
+                <ram:Name>Example GmbH</ram:Name>
+                <ram:PostalTradeAddress>
+                    <ram:PostcodeCode>25813</ram:PostcodeCode>
+                    <ram:LineOne>Examplestreet</ram:LineOne>
+                    <ram:CityName>Example City</ram:CityName>
+                    <ram:CountryID>DE</ram:CountryID>
+                </ram:PostalTradeAddress>
+            </ram:InvoiceeTradeParty>
+            <ram:SpecifiedTradeSettlementPaymentMeans>
+                <ram:TypeCode>42</ram:TypeCode>
+                <ram:PayeePartyCreditorFinancialAccount>
+                    <ram:IBANID>DE62508526510033203159</ram:IBANID>
+                </ram:PayeePartyCreditorFinancialAccount>
+                <ram:PayeeSpecifiedCreditorFinancialInstitution>
+                    <ram:BICID>HELADEF1DIE</ram:BICID>
+                </ram:PayeeSpecifiedCreditorFinancialInstitution>
+            </ram:SpecifiedTradeSettlementPaymentMeans>
+            <ram:SpecifiedTradeSettlementPaymentMeans>
+                <ram:TypeCode>42</ram:TypeCode>
+                <ram:PayeePartyCreditorFinancialAccount>
+                    <ram:IBANID>DE11111111111111111111111111</ram:IBANID>
+                </ram:PayeePartyCreditorFinancialAccount>
+                <ram:PayeeSpecifiedCreditorFinancialInstitution>
+                    <ram:BICID>COBADEFFXXX</ram:BICID>
+                </ram:PayeeSpecifiedCreditorFinancialInstitution>
+            </ram:SpecifiedTradeSettlementPaymentMeans>
+            <ram:ApplicableTradeTax>
+                <ram:CalculatedAmount>10.96</ram:CalculatedAmount>
+                <ram:TypeCode>VAT</ram:TypeCode>
+                <ram:BasisAmount>57.67</ram:BasisAmount>
+                <ram:CategoryCode>S</ram:CategoryCode>
+                <ram:RateApplicablePercent>19.00</ram:RateApplicablePercent>
+            </ram:ApplicableTradeTax>
+            <ram:SpecifiedTradeAllowanceCharge>
+                <ram:ChargeIndicator>
+                    <udt:Indicator>false</udt:Indicator>
+                </ram:ChargeIndicator>
+                <ram:ActualAmount>0.00</ram:ActualAmount>
+                <ram:Reason>Rabatt</ram:Reason>
+                <ram:CategoryTradeTax>
+                    <ram:TypeCode>VAT</ram:TypeCode>
+                    <ram:CategoryCode>S</ram:CategoryCode>
+                    <ram:RateApplicablePercent>19.00</ram:RateApplicablePercent>
+                </ram:CategoryTradeTax>
+            </ram:SpecifiedTradeAllowanceCharge>
+            <ram:SpecifiedTradePaymentTerms>
+                <ram:Description>Bis zum 23.12.2024 ohne Abzug</ram:Description>
+            </ram:SpecifiedTradePaymentTerms>
+            <ram:SpecifiedTradePaymentTerms>
+                <ram:Description>sofort zahlbar ohne Abzug</ram:Description>
+                <ram:ApplicableTradePaymentDiscountTerms>
+                    <ram:BasisDateTime>
+                        <udt:DateTimeString format="102">20241223</udt:DateTimeString>
+                    </ram:BasisDateTime>
+                </ram:ApplicableTradePaymentDiscountTerms>
+            </ram:SpecifiedTradePaymentTerms>
+            <ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+                <ram:LineTotalAmount>57.67</ram:LineTotalAmount>
+                <ram:ChargeTotalAmount>0.00</ram:ChargeTotalAmount>
+                <ram:AllowanceTotalAmount>0.00</ram:AllowanceTotalAmount>
+                <ram:TaxBasisTotalAmount>57.67</ram:TaxBasisTotalAmount>
+                <ram:TaxTotalAmount currencyID="EUR">10.96</ram:TaxTotalAmount>
+                <ram:GrandTotalAmount>68.63</ram:GrandTotalAmount>
+                <ram:TotalPrepaidAmount>0.00</ram:TotalPrepaidAmount>
+                <ram:DuePayableAmount>68.63</ram:DuePayableAmount>
+            </ram:SpecifiedTradeSettlementHeaderMonetarySummation>
+        </ram:ApplicableHeaderTradeSettlement>
+    </rsm:SupplyChainTradeTransaction>
+</rsm:CrossIndustryInvoice>
