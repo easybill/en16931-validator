@@ -24,10 +24,24 @@ public final class XMLSanitizer {
     public static @NonNull String sanitize(@NonNull String xml)
         throws XmlSanitizationException {
         try {
-            return removeEmptyTags(removeBOM(xml));
+            return removeEmptyTags(
+                removeInvalidCharsFromProlog(removeBOM(xml))
+            );
         } catch (Exception exception) {
             throw new XmlSanitizationException(exception);
         }
+    }
+
+    private static @NonNull String removeInvalidCharsFromProlog(
+        @NonNull String payload
+    ) {
+        var indexOfXmlIntro = payload.indexOf("<?xml version");
+
+        if (indexOfXmlIntro == 0) {
+            return payload;
+        }
+
+        return payload.substring(indexOfXmlIntro);
     }
 
     private static @NonNull String removeBOM(@NonNull String xml) {

@@ -64,7 +64,7 @@ class ValidationControllerTest {
             .when()
             .post("/validation")
             .then()
-            .statusCode(422);
+            .statusCode(200);
     }
 
     @ParameterizedTest
@@ -167,7 +167,6 @@ class ValidationControllerTest {
             "CII/CII_ZUGFeRD_23_XRECHNUNG_Einfach.xml",
             "CII/CII_ZUGFeRD_23_XRECHNUNG_Elektron.xml",
             "CII/CII_ZUGFeRD_23_XRECHNUNG_Reisekostenabrechnung.xml",
-            "CII/XRechnung-O.xml",
             "CII/CII_ZUGFeRD_23_EXTENDED_Rechnungskorrektur.xml",
         }
     )
@@ -208,7 +207,8 @@ class ValidationControllerTest {
             Arguments.of(
                 "CII/CII_ZUGFeRD_23_EXTENDED_Projektabschlussrechnung.xml"
             ),
-            Arguments.of("CII/CII_ZUGFeRD_23_EXTENDED_Warenrechnung.xml")
+            Arguments.of("CII/CII_ZUGFeRD_23_EXTENDED_Warenrechnung.xml"),
+            Arguments.of("CII/XRechnung-O.xml")
         );
     }
 
