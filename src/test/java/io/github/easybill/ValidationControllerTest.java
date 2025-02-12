@@ -42,14 +42,15 @@ class ValidationControllerTest {
     }
 
     @Test
-    void testValidationEndpointWithPayloadWithMissingNamespaces() throws IOException {
+    void testValidationEndpointWithPayloadWithMissingNamespaces()
+        throws IOException {
         given()
-                .body(loadFixtureFileAsStream("Invalid/CII_missing_namespace.xml"))
-                .contentType(ContentType.XML)
-                .when()
-                .post("/validation")
-                .then()
-                .statusCode(422);
+            .body(loadFixtureFileAsStream("Invalid/CII_missing_namespace.xml"))
+            .contentType(ContentType.XML)
+            .when()
+            .post("/validation")
+            .then()
+            .statusCode(422);
     }
 
     @Test

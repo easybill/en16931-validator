@@ -29,8 +29,8 @@ public final class XMLSanitizer {
     ) throws XmlSanitizationException {
         try {
             return removeEmptyTags(
-                    removeInvalidCharsFromProlog(removeBOM(xml)),
-                    charset
+                removeInvalidCharsFromProlog(removeBOM(xml)),
+                charset
             );
         } catch (SAXParseException parseException) {
             throw new InvalidXmlException(parseException);
