@@ -1,5 +1,6 @@
 package io.github.easybill.Services;
 
+import io.github.easybill.Exceptions.InvalidXmlException;
 import io.github.easybill.Exceptions.XmlSanitizationException;
 import java.io.*;
 import java.nio.charset.Charset;
@@ -18,6 +19,7 @@ import org.w3c.dom.*;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 public final class XMLSanitizer {
 
@@ -27,9 +29,11 @@ public final class XMLSanitizer {
     ) throws XmlSanitizationException {
         try {
             return removeEmptyTags(
-                removeInvalidCharsFromProlog(removeBOM(xml)),
-                charset
+                    removeInvalidCharsFromProlog(removeBOM(xml)),
+                    charset
             );
+        } catch (SAXParseException parseException) {
+            throw new InvalidXmlException(parseException);
         } catch (Exception exception) {
             throw new XmlSanitizationException(exception);
         }

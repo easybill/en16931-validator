@@ -42,6 +42,17 @@ class ValidationControllerTest {
     }
 
     @Test
+    void testValidationEndpointWithPayloadWithMissingNamespaces() throws IOException {
+        given()
+                .body(loadFixtureFileAsStream("Invalid/CII_missing_namespace.xml"))
+                .contentType(ContentType.XML)
+                .when()
+                .post("/validation")
+                .then()
+                .statusCode(422);
+    }
+
+    @Test
     void testValidationEndpointWithPayloadIncludingBOM() throws IOException {
         given()
             .body(loadFixtureFileAsStream("CII/EN16931_Einfach_BOM.xml"))
