@@ -68,6 +68,21 @@ class ValidationControllerTest {
     }
 
     @Test
+    // The XML tag (i. e. <?xml) is optional. So we should be able to parse the xml even if it is missing the tag
+    void testValidationEndpointWithPayloadMissingTheXmlTag() throws IOException {
+        given()
+                .body(loadFixtureFileAsStream("UBL/xrechnung-missing-xml-tag.xml"))
+                .contentType(ContentType.XML)
+                .when()
+                .post("/validation")
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("is_valid", equalTo(true))
+                .body("errors", empty());
+    }
+
+    @Test
     void testValidationEndpointWithPayloadIncludingCharsInProlog()
         throws IOException {
         given()
