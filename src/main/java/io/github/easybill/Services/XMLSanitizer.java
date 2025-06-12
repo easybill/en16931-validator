@@ -44,7 +44,7 @@ public final class XMLSanitizer {
     ) {
         var indexOfXmlIntro = payload.indexOf("<?xml version");
 
-        if (indexOfXmlIntro == 0) {
+        if (indexOfXmlIntro == 0 || indexOfXmlIntro == -1) {
             return payload;
         }
 
