@@ -196,7 +196,7 @@ class ValidationControllerTest {
             "CII/CII_ZUGFeRD_23_XRECHNUNG_Elektron.xml",
             "CII/CII_ZUGFeRD_23_XRECHNUNG_Reisekostenabrechnung.xml",
             "CII/CII_ZUGFeRD_23_EXTENDED_Rechnungskorrektur.xml",
-            "CII/CII_ZUGFeRD_23_EXTENDED_Projektabschlussrechnung.xml"
+            "CII/CII_ZUGFeRD_23_EXTENDED_Projektabschlussrechnung.xml",
         }
     )
     void testValidationEndpointWithValidCIIDocuments(
