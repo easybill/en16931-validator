@@ -196,6 +196,7 @@ class ValidationControllerTest {
             "CII/CII_ZUGFeRD_23_XRECHNUNG_Elektron.xml",
             "CII/CII_ZUGFeRD_23_XRECHNUNG_Reisekostenabrechnung.xml",
             "CII/CII_ZUGFeRD_23_EXTENDED_Rechnungskorrektur.xml",
+            "CII/CII_ZUGFeRD_23_EXTENDED_Projektabschlussrechnung.xml",
         }
     )
     void testValidationEndpointWithValidCIIDocuments(
@@ -232,9 +233,6 @@ class ValidationControllerTest {
             // Profile EXTENDED is EN16931 conform. However, those examples do have rounding issues. Which is valid
             // in EXTENDED Profile
             Arguments.of("CII/CII_ZUGFeRD_23_EXTENDED_Kostenrechnung.xml"),
-            Arguments.of(
-                "CII/CII_ZUGFeRD_23_EXTENDED_Projektabschlussrechnung.xml"
-            ),
             Arguments.of("CII/CII_ZUGFeRD_23_EXTENDED_Warenrechnung.xml"),
             Arguments.of("CII/XRechnung-O.xml")
         );

@@ -14,9 +14,6 @@
  xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100"
  xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100">
     <rsm:ExchangedDocumentContext>
-        <ram:BusinessProcessSpecifiedDocumentContextParameter>
-            <ram:ID>P1</ram:ID>
-        </ram:BusinessProcessSpecifiedDocumentContextParameter>
         <ram:GuidelineSpecifiedDocumentContextParameter>
             <ram:ID>urn:cen.eu:en16931:2017</ram:ID>
         </ram:GuidelineSpecifiedDocumentContextParameter>
@@ -349,15 +346,8 @@
             </ram:PayeeTradeParty>
             <ram:SpecifiedTradeSettlementPaymentMeans>
                 <ram:TypeCode>58</ram:TypeCode>
-                <ram:Information>Half prepaid</ram:Information>
-                <ram:PayerPartyDebtorFinancialAccount>
-                    <ram:IBANID>DK1212341234123412</ram:IBANID>
-                </ram:PayerPartyDebtorFinancialAccount>
-            </ram:SpecifiedTradeSettlementPaymentMeans>
-            <ram:SpecifiedTradeSettlementPaymentMeans>
-                <ram:TypeCode>58</ram:TypeCode>
                 <ram:PayeePartyCreditorFinancialAccount>
-                    <ram:IBANID/>
+                    <ram:IBANID>DK1212341234123412</ram:IBANID>
                 </ram:PayeePartyCreditorFinancialAccount>
             </ram:SpecifiedTradeSettlementPaymentMeans>
             <ram:ApplicableTradeTax>
