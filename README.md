@@ -38,11 +38,14 @@ services:
 docker compose up --detach --wait --wait-timeout 30
 ```
 
-- Example of using this service (PHP)
+- Example of using this service (PHP) and GuzzleHttp
 ```PHP
 <?php
 
 declare(strict_types=1);
+
+use GuzzleHttp\Client;
+use GuzzleHttp\RequestOptions;
 
 final class EN16931Validator
 {
@@ -52,7 +55,7 @@ final class EN16931Validator
 
         $response = $httpClient->request('POST', 'http://localhost:8081/validation', [
             RequestOptions::HEADERS => [
-                'Content-Type' => 'application/json',
+                'Content-Type' => 'application/xml',
             ],
             RequestOptions::BODY => $xml,
             RequestOptions::TIMEOUT => 10,
