@@ -20,6 +20,7 @@ docker image and make HTTP-Requests from the main application to the service for
 
 > You can find a OpenAPI documentation after you started the service at /swagger
 ```yaml
+services:
   en16931-validator:
     image: 'easybill/en16931-validator:latest'
     ports:
@@ -27,7 +28,7 @@ docker image and make HTTP-Requests from the main application to the service for
     environment:
         JAVA_TOOL_OPTIONS: -Xmx512m
     healthcheck:
-      test: curl --fail http://localhost:8081/health || exit 0
+      test: curl --fail http://localhost:8080/health || exit 0
       interval: 10s
       retries: 6
 ```
@@ -90,6 +91,7 @@ final class EN16931Validator
 ## Insights
 You may enable bug reporting via Bugsnag by supplying the env-variable `BUGSNAG_API_KEY`.
 ```yaml
+services:
   en16931-validator:
     image: 'easybill/en16931-validator:latest'
     ports:
@@ -98,7 +100,7 @@ You may enable bug reporting via Bugsnag by supplying the env-variable `BUGSNAG_
         JAVA_TOOL_OPTIONS: -Xmx512m
         BUGSNAG_API_KEY: <YOUR_API_KEY>
     healthcheck:
-      test: curl --fail http://localhost:8081/health || exit 0
+      test: curl --fail http://localhost:8080/health || exit 0
       interval: 10s
       retries: 6
 ```
