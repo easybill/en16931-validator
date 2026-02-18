@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - { operating-system: 'ubuntu-latest', java-version: '21' }
+          - { operating-system: 'ubuntu-latest', java-version: '24' }
 
     runs-on: ${{ matrix.operating-system }}
 
@@ -28,7 +28,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v3
         with:
-          gradle-version: 8.7
+          gradle-version: 8.14
 
       - name: Run tests with gradle wrapper
         run: gradle test

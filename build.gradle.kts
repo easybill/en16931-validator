@@ -2,8 +2,8 @@ plugins {
     java
     id("io.quarkus") version "3.20.5"
     id("com.diffplug.spotless") version "6.25.0"
-    id("com.github.spotbugs") version "6.0.15"
-    id("org.checkerframework") version "0.6.44"
+    id("com.github.spotbugs") version "6.4.8"
+    id("org.checkerframework") version "1.0.2"
 }
 
 repositories {
@@ -64,8 +64,8 @@ spotless {
 }
 
 checkerFramework {
+    version = "3.53.1"
     excludeTests = true
-    suppressLombokWarnings = false
     checkers = listOf(
         "org.checkerframework.checker.nullness.NullnessChecker",
         "org.checkerframework.checker.resourceleak.ResourceLeakChecker",
