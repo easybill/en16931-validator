@@ -196,7 +196,6 @@ class ValidationControllerTest {
             "CII/CII_ZUGFeRD_23_XRECHNUNG_Elektron.xml",
             "CII/CII_ZUGFeRD_23_XRECHNUNG_Reisekostenabrechnung.xml",
             "CII/CII_ZUGFeRD_23_EXTENDED_Rechnungskorrektur.xml",
-            "CII/CII_ZUGFeRD_23_EXTENDED_Projektabschlussrechnung.xml",
         }
     )
     void testValidationEndpointWithValidCIIDocuments(
@@ -234,7 +233,10 @@ class ValidationControllerTest {
             // in EXTENDED Profile
             Arguments.of("CII/CII_ZUGFeRD_23_EXTENDED_Kostenrechnung.xml"),
             Arguments.of("CII/CII_ZUGFeRD_23_EXTENDED_Warenrechnung.xml"),
-            Arguments.of("CII/XRechnung-O.xml")
+            Arguments.of("CII/XRechnung-O.xml"),
+            Arguments.of(
+                "CII/CII_ZUGFeRD_23_EXTENDED_Projektabschlussrechnung.xml"
+            )
         );
     }
 
