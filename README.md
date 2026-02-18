@@ -8,7 +8,7 @@ EN16931 schematron rules. It exposes a validation endpoint which takes the
 to be validated XML and returns a JSON payload which contains possible warnings or errors. The HTTP status code indicates if the
 provided XML is valid (200) or has issues (400). UBL and CII is supported.
 
-### Currently supported validation artifacts: [v1.3.14.1](https://github.com/ConnectingEurope/eInvoicing-EN16931/releases/tag/validation-1.3.14.1)
+### Currently supported validation artifacts: [v1.3.15](https://github.com/ConnectingEurope/eInvoicing-EN16931/releases/tag/validation-1.3.15)
 
 ## Usage
 This service was mainly designed with containerization in mind. So general idea is to use the following
