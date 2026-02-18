@@ -1,7 +1,7 @@
-FROM eclipse-temurin:21-alpine
+FROM eclipse-temurin:24-alpine
 
 WORKDIR .
 
 COPY ./build/en16931-validator--runner.jar .
 
-ENTRYPOINT ["java", "-jar", "en16931-validator--runner.jar"]
+ENTRYPOINT ["java", "-jar", "en16931-validator-0.6.0.jar"]
