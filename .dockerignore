@@ -1,5 +1,5 @@
 *
-!build/*-runner
-!build/*-runner.jar
+!build/en16931-validator-*
+!build/en16931-validator-*.jar
 !build/lib/*
 !build/quarkus-app/*
