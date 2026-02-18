@@ -1,6 +1,6 @@
 plugins {
     java
-    id("io.quarkus") version "3.16.1"
+    id("io.quarkus") version "3.20.5"
     id("com.diffplug.spotless") version "6.25.0"
     id("com.github.spotbugs") version "6.0.15"
     id("org.checkerframework") version "0.6.44"
@@ -37,11 +37,11 @@ dependencies {
 }
 
 group = "io.github.easybill"
-version = ""
+version = "0.6.0"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_24
+    targetCompatibility = JavaVersion.VERSION_24
 }
 
 spotbugs {
